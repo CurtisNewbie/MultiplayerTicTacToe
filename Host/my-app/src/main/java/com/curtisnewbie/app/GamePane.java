@@ -287,6 +287,14 @@ public class GamePane extends GridPane {
         return this.finished;
     }
 
+    public int[] getLastStep() {
+        // check whether it has moved
+        if (lastStep[0] == 0 && lastStep[0] == 0 && gameBoard[0][0] == EMPTY)
+            return null;
+        else
+            return new int[] { lastStep[0], lastStep[1] };
+    }
+
     /** Handler for the nine buttons ActionEvent */
     public class ClickHandler implements EventHandler<ActionEvent> {
 
