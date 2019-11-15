@@ -1,2 +1,2 @@
 # MultiplierTicTacToe
-TicTacToe that supports multiplers.
+TicTacToe that supports multiplayers.
