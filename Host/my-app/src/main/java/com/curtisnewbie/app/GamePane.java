@@ -28,6 +28,12 @@ public class GamePane extends GridPane {
     private boolean finished;
 
     /**
+     * Indicate whether user has moved. This is for current user only not for the
+     * opponent
+     */
+    private boolean moved;
+
+    /**
      * List of buttons represent the nine squares on the tictaktoe game board, and
      * which are used to detect where the user clicks on.
      */
@@ -43,6 +49,7 @@ public class GamePane extends GridPane {
     private int[] lastStep;
 
     public GamePane() {
+        this.moved = false;
         this.gameBoard = new int[3][3];
         this.lastStep = new int[2];
         this.buttons = new Button[3][3];
@@ -249,12 +256,16 @@ public class GamePane extends GridPane {
 
     /**
      * This method is used to update the gameboard as opponent click on a cell. This
-     * method draws "O" on the gameboard instead of the "X".
+     * method draws "O" on the gameboard instead of the "X". This method also
+     * updates {@code moved} variable, as it indicates user can move now.
      * 
      * @param row row
      * @param col col
      */
     public void opponentMove(int row, int col) {
+        // it's current user's turn to move
+        this.moved = false;
+
         gameBoard[row][col] = CIRCLE;
         buttons[row][col].setDisable(true);
         buttons[row][col].setText("O");
@@ -295,6 +306,16 @@ public class GamePane extends GridPane {
             return new int[] { lastStep[0], lastStep[1] };
     }
 
+    /**
+     * Check whether user has moved.
+     * 
+     * @return {@code True} when user has moved, {@code False} when user hasn't
+     *         moved yet.
+     */
+    public boolean hasMoved() {
+        return moved;
+    }
+
     /** Handler for the nine buttons ActionEvent */
     public class ClickHandler implements EventHandler<ActionEvent> {
 
@@ -308,6 +329,9 @@ public class GamePane extends GridPane {
 
         @Override
         public void handle(ActionEvent event) {
+            // current user has moved
+            GamePane.this.moved = true;
+
             gameBoard[row][col] = CROSS;
             buttons[row][col].setDisable(true);
             buttons[row][col].setText("X");
