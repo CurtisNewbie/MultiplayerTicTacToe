@@ -122,9 +122,29 @@ public class GamePane extends GridPane {
      * @param c column
      * @return whether this step wins
      */
-    public boolean win(int r, int c) {
-        return checkLeft(r, c, gameBoard[r][c], 1) || checkRight(r, c, gameBoard[r][c], 1)
-                || checkBottom(r, c, gameBoard[r][c], 1) || checkTop(r, c, gameBoard[r][c], 1);
+    public boolean hasWon() {
+
+        // check each column
+        for (int i = 0; i < 3; i++) {
+            if (gameBoard[0][i] == CROSS && gameBoard[1][i] == CROSS && gameBoard[2][i] == CROSS) {
+                return true;
+            }
+        }
+
+        // check each row
+        for (int i = 0; i < 3; i++) {
+            if (gameBoard[i][0] == CROSS && gameBoard[i][1] == CROSS && gameBoard[i][2] == CROSS) {
+                return true;
+            }
+        }
+
+        // check diagonal
+        if (gameBoard[0][0] == CROSS && gameBoard[1][1] == CROSS && gameBoard[2][2] == CROSS)
+            return true;
+        if (gameBoard[0][2] == CROSS && gameBoard[1][1] == CROSS && gameBoard[2][0] == CROSS)
+            return true;
+
+        return false;
     }
 
     /**
@@ -143,114 +163,6 @@ public class GamePane extends GridPane {
     }
 
     /**
-     * Recursively check whether the cells on left-hand side are linked together
-     * (i.e., all three cells are TICK or CROSS).
-     * 
-     * @param row           row of current cell
-     * @param col           column of current cell
-     * @param value         value of this cell, indicating whether this cell is: not
-     *                      selected or cross or tick
-     * @param numOfAdjacent number of cells that are adjacent to current cell and
-     *                      are of same value (either CROSS or TICK)
-     * @return whether the game wins
-     */
-    private boolean checkLeft(int row, int col, int value, int numOfAdjacent) {
-        if (numOfAdjacent == 3) {
-            // win
-            return true;
-        } else {
-            if (col - 1 >= 0 && gameBoard[row][col - 1] == value) {
-                // check the next one on the left
-                return checkLeft(row, col - 1, value, numOfAdjacent++);
-            } else {
-                // the cell on the left is different or out of boundary.
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Recursively check whether the cells on right-hand side are linked together
-     * (i.e., all three cells are TICK or CROSS).
-     * 
-     * @param row           row of current cell
-     * @param col           column of current cell
-     * @param value         value of this cell, indicating whether this cell is: not
-     *                      selected or cross or tick
-     * @param numOfAdjacent number of cells that are adjacent to current cell and
-     *                      are of same value (either CROSS or TICK)
-     * @return whether the game wins
-     */
-    private boolean checkRight(int row, int col, int value, int numOfAdjacent) {
-        if (numOfAdjacent == 3) {
-            // win
-            return true;
-        } else {
-            if (col + 1 <= 2 && gameBoard[row][col + 1] == value) {
-                // check the next one on the right
-                return checkRight(row, col + 1, value, numOfAdjacent++);
-            } else {
-                // the cell on the right is different or out of boundary.
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Recursively check whether the cells on the top are linked together (i.e., all
-     * three cells are TICK or CROSS).
-     * 
-     * @param row           row of current cell
-     * @param col           column of current cell
-     * @param value         value of this cell, indicating whether this cell is: not
-     *                      selected or cross or tick
-     * @param numOfAdjacent number of cells that are adjacent to current cell and
-     *                      are of same value (either CROSS or TICK)
-     * @return whether the game wins
-     */
-    private boolean checkTop(int row, int col, int value, int numOfAdjacent) {
-        if (numOfAdjacent == 3) {
-            // win
-            return true;
-        } else {
-            if (row - 1 >= 0 && gameBoard[row - 1][col] == value) {
-                // check the next one on the top
-                return checkTop(row - 1, col, value, numOfAdjacent++);
-            } else {
-                // the cell on the top is different or out of boundary.
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Recursively check whether the cells on bottom are linked together (i.e., all
-     * three cells are TICK or CROSS).
-     * 
-     * @param row           row of current cell
-     * @param col           column of current cell
-     * @param value         value of this cell, indicating whether this cell is: not
-     *                      selected or cross or tick
-     * @param numOfAdjacent number of cells that are adjacent to current cell and
-     *                      are of same value (either CROSS or TICK)
-     * @return whether the game wins
-     */
-    private boolean checkBottom(int row, int col, int value, int numOfAdjacent) {
-        if (numOfAdjacent == 3) {
-            // win
-            return true;
-        } else {
-            if (row + 1 <= 2 && gameBoard[row + 1][col] == value) {
-                // check the next one on the bottom
-                return checkTop(row + 1, col, value, numOfAdjacent++);
-            } else {
-                // the cell on the bottom is different or out of boundary.
-                return false;
-            }
-        }
-    }
-
-    /**
      * This method is used to update the gameboard as opponent click on a cell. This
      * method draws "O" on the gameboard instead of the "X". This method also
      * updates {@code moved} variable, as it indicates user can move now.
@@ -266,7 +178,7 @@ public class GamePane extends GridPane {
         buttons[row][col].setDisable(true);
         buttons[row][col].setText("O");
         refresh();
-        if (win(row, col)) {
+        if (hasWon()) {
             this.finished = true;
             freeze();
             var dial = new Alert(AlertType.INFORMATION);
@@ -336,7 +248,8 @@ public class GamePane extends GridPane {
             refresh();
 
             // check whether current user wins
-            if (win(row, col)) {
+            if (hasWon()) {
+                System.out.println("Win?");
                 GamePane.this.finished = true;
                 freeze();
                 var dial = new Alert(AlertType.INFORMATION);
