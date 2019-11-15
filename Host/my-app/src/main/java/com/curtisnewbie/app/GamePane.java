@@ -24,6 +24,9 @@ public class GamePane extends GridPane {
     /** Has never been selected */
     private final int EMPTY = 0;
 
+    /** Indicate whether the game has finished */
+    private boolean finished;
+
     /**
      * List of buttons represent the nine squares on the tictaktoe game board, and
      * which are used to detect where the user clicks on.
@@ -257,12 +260,14 @@ public class GamePane extends GridPane {
         buttons[row][col].setText("O");
         refresh();
         if (win(row, col)) {
+            this.finished = true;
             freeze();
             var dial = new Alert(AlertType.INFORMATION);
             dial.setContentText("You Lost!");
             dial.showAndWait();
         } else {
             if (isFull()) {
+                this.finished = true;
                 var dial = new Alert(AlertType.INFORMATION);
                 dial.setContentText("Ends, Nobody Wins!");
                 dial.showAndWait();
@@ -276,6 +281,10 @@ public class GamePane extends GridPane {
 
     public void unfreeze() {
         this.setDisable(false);
+    }
+
+    public boolean isFinished() {
+        return this.finished;
     }
 
     /** Handler for the nine buttons ActionEvent */
@@ -300,12 +309,14 @@ public class GamePane extends GridPane {
 
             // check whether current user wins
             if (win(row, col)) {
+                GamePane.this.finished = true;
                 freeze();
                 var dial = new Alert(AlertType.INFORMATION);
                 dial.setContentText("You Win!");
                 dial.showAndWait();
             } else {
                 if (isFull()) {
+                    GamePane.this.finished = true;
                     var dial = new Alert(AlertType.INFORMATION);
                     dial.setContentText("Ends, Nobody Wins!");
                     dial.showAndWait();
