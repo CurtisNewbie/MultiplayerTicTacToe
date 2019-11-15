@@ -176,7 +176,7 @@ public class GamePane extends GridPane {
 
         gameBoard[row][col] = CIRCLE;
         buttons[row][col].setDisable(true);
-        buttons[row][col].setText("O");
+        buttons[row][col].setText("0");
         refresh();
         if (hasWon()) {
             this.finished = true;
@@ -206,9 +206,14 @@ public class GamePane extends GridPane {
         return this.finished;
     }
 
+    /**
+     * Get the last step that user went to
+     * 
+     * @return {@code Null} if user hasn't moved yet, else {@code int[]} where [0]
+     *         is row and [1] is column.
+     */
     public int[] getLastStep() {
-        // check whether it has moved
-        if (lastStep[0] == 0 && lastStep[0] == 0 && gameBoard[0][0] == EMPTY)
+        if (!hasMoved())
             return null;
         else
             return new int[] { lastStep[0], lastStep[1] };
