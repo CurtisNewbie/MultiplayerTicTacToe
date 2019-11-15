@@ -161,13 +161,12 @@ public class GamePane extends GridPane {
         } else {
             if (col - 1 >= 0 && gameBoard[row][col - 1] == value) {
                 // check the next one on the left
-                checkLeft(row, col - 1, value, numOfAdjacent++);
+                return checkLeft(row, col - 1, value, numOfAdjacent++);
             } else {
                 // the cell on the left is different or out of boundary.
                 return false;
             }
         }
-        return false;
     }
 
     /**
@@ -189,13 +188,12 @@ public class GamePane extends GridPane {
         } else {
             if (col + 1 <= 2 && gameBoard[row][col + 1] == value) {
                 // check the next one on the right
-                checkRight(row, col + 1, value, numOfAdjacent++);
+                return checkRight(row, col + 1, value, numOfAdjacent++);
             } else {
                 // the cell on the right is different or out of boundary.
                 return false;
             }
         }
-        return false;
     }
 
     /**
@@ -217,13 +215,12 @@ public class GamePane extends GridPane {
         } else {
             if (row - 1 >= 0 && gameBoard[row - 1][col] == value) {
                 // check the next one on the top
-                checkTop(row - 1, col, value, numOfAdjacent++);
+                return checkTop(row - 1, col, value, numOfAdjacent++);
             } else {
                 // the cell on the top is different or out of boundary.
                 return false;
             }
         }
-        return false;
     }
 
     /**
@@ -245,13 +242,12 @@ public class GamePane extends GridPane {
         } else {
             if (row + 1 <= 2 && gameBoard[row + 1][col] == value) {
                 // check the next one on the bottom
-                checkTop(row + 1, col, value, numOfAdjacent++);
+                return checkTop(row + 1, col, value, numOfAdjacent++);
             } else {
                 // the cell on the bottom is different or out of boundary.
                 return false;
             }
         }
-        return false;
     }
 
     /**
