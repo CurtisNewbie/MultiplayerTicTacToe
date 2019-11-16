@@ -43,11 +43,11 @@ public class Client extends Application {
 
         // Connect to Host and Start the Game
         new Thread(() -> {
-            gamePane.setDisable(true);
+            gamePane.freeze();
             // connect to Host
             makeConnection();
             // start the game
-            gamePane.setDisable(false);
+            gamePane.unfreeze();
             startGame();
         }).start();
     }
