@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 public class Client extends Application {
@@ -14,8 +16,11 @@ public class Client extends Application {
     // modify it and the one in Host program, if necessary
     private static final int PORT = 7000;
 
-    // modify it if necessary
-    private static final String IP = "localhost";
+    /** Default ip */
+    private static final String DEF_IP = "localhost";
+
+    /** Ip address provided by user */
+    private String ip = null;
 
     /** The View of this proram */
     private GamePane gamePane;
@@ -54,8 +59,11 @@ public class Client extends Application {
     /** Connect to Host */
     private void makeConnection() {
         try {
-            // setup Client
-            socket = new Socket(IP, PORT);
+            // ask for ip through dialog
+            getIPThruAlert();
+
+            // setup Client, use default IP if not provided
+            socket = new Socket(ip == null ? DEF_IP : ip, PORT);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             System.out.println("Connected to Host : " + socket.getInetAddress().getHostAddress());
@@ -119,6 +127,24 @@ public class Client extends Application {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Get IP address through Creating a {@code TextInputDialog}.
+     *
+     * @return IP address or {@code NULL} if not provided through dialog.
+     */
+    private void getIPThruAlert() {
+        Platform.runLater(() -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("IP Input Dialog");
+            dialog.setContentText("Enter Host's IP:");
+            var response = dialog.showAndWait();
+            if (response.isEmpty())
+                ip = response.get();
+            else
+                ip = null;
+        });
     }
 
 }
