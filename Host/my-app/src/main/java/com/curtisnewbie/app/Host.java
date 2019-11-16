@@ -1,17 +1,14 @@
 package com.curtisnewbie.app;
 
-import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
+import javafx.stage.Stage;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 public class Host extends Application {
 
@@ -81,31 +78,33 @@ public class Host extends Application {
      * 
      */
     private void startGame() {
-        System.out.println("Game Started");
+        System.out.println("Game Started\n");
         int[] lastStep = null;
+        gamePane.freeze();
         try {
             while (!gamePane.isFull() || !gamePane.hasWon()) {
+                // it's user's turn to move
+                gamePane.unfreeze();
 
                 System.out.println("Wait For User to select");
-
                 while ((lastStep = gamePane.getLastStep()) == null) {
-                    // Host starts first, wait for user to start
+                    // wait for user to start
                     Thread.sleep(10);
                 }
                 // user has moved
-                System.out.println("Moved");
-                System.out.println(Arrays.toString(lastStep));
+                gamePane.freeze();
 
-                // tell the client which step the user moved
+                // tell the Opponent/client which step the user moved
                 out.writeInt(lastStep[0]);
                 out.writeInt(lastStep[1]);
                 out.flush();
 
+                // Opponent/ Client has moved, update the gamePane
                 int row = in.readInt();
                 int col = in.readInt();
-                // update the game pane as opponent (client) moved.
                 gamePane.opponentMoveTo(row, col);
             }
+            gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

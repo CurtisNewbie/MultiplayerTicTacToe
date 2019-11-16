@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -76,36 +75,42 @@ public class Client extends Application {
      * 4. Repeat this process until the game finishes.
      */
     private void startGame() {
-        System.out.println("Game Started");
+        System.out.println("Game Started\n");
         int[] lastStep = null;
-
+        gamePane.freeze();
         try {
+
+            // Host starts first, so we wait for signal
+            gamePane.opponentMoveTo(in.readInt(), in.readInt());
+
             while (!gamePane.isFull() || !gamePane.hasWon()) {
+                // it's user's turn to move
+                gamePane.unfreeze();
 
-                // Host starts first, so we wait for signal
-                int row = in.readInt();
-                int col = in.readInt();
-                System.out.println("Host went for [" + row + "," + col + "]");
-                // update the game pane as opponent (Host) moved.
-                gamePane.opponentMoveTo(row, col);
-
+                System.out.println("Wait For User to select");
                 while ((lastStep = gamePane.getLastStep()) == null) {
-                    // Host starts first, wait for user to start
+                    // wait for user to start
                     Thread.sleep(10);
                 }
-                // user has moved
-                System.out.println("Moved");
-                System.out.println(Arrays.toString(lastStep));
+                // User has moved
+                gamePane.freeze();
 
-                // tell the Host which step the user moved
+                // tell the Opponent/Host which step the user moved
                 out.writeInt(lastStep[0]);
                 out.writeInt(lastStep[1]);
                 out.flush();
+
+                // Opponent/ Host has moved, update the gamePane
+                int row = in.readInt();
+                int col = in.readInt();
+                gamePane.opponentMoveTo(row, col);
             }
+            gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
 }
