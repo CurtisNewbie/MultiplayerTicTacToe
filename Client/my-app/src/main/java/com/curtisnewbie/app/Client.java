@@ -32,6 +32,9 @@ public class Client extends Application {
     // OutputStream to Host
     private DataOutputStream out;
 
+    /** The Dialog used to ask for IP address of Host */
+    private TextInputDialog dialog;
+
     public void start(Stage priStage) {
         // Initiate gui
         gamePane = new GamePane();
@@ -44,6 +47,14 @@ public class Client extends Application {
         priStage.setOnCloseRequest(e -> {
             System.exit(0);
         });
+
+        // ask for ip through dialog, wait for response until closed
+        dialog = createIPDialog();
+        var response = dialog.showAndWait();
+        if (response.isPresent())
+            ip = response.get();
+        else
+            ip = null;
 
         // Connect to Host and Start the Game
         new Thread(() -> {
@@ -59,9 +70,6 @@ public class Client extends Application {
     /** Connect to Host */
     private void makeConnection() {
         try {
-            // ask for ip through dialog
-            getIPThruAlert();
-
             // setup Client, use default IP if not provided
             socket = new Socket(ip == null ? DEF_IP : ip, PORT);
             in = new DataInputStream(socket.getInputStream());
@@ -130,21 +138,15 @@ public class Client extends Application {
     }
 
     /**
-     * Get IP address through Creating a {@code TextInputDialog}.
+     * Create a {@code TextInputDialog} to get IP address
      *
-     * @return IP address or {@code NULL} if not provided through dialog.
+     * @return {@code TextInputDialog} to get IP address
      */
-    private void getIPThruAlert() {
-        Platform.runLater(() -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("IP Input Dialog");
-            dialog.setContentText("Enter Host's IP:");
-            var response = dialog.showAndWait();
-            if (response.isEmpty())
-                ip = response.get();
-            else
-                ip = null;
-        });
+    private TextInputDialog createIPDialog() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("IP Input Dialog");
+        dialog.setContentText("Enter Host's IP:");
+        return dialog;
     }
 
 }
