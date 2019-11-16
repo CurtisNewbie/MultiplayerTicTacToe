@@ -4,6 +4,7 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.event.*;
+import javafx.application.Platform;
 
 /**
  * A {@code GridPane} that draws a TicTacToe game board, it has a number of
@@ -111,8 +112,10 @@ public class GamePane extends GridPane {
      * is clicked
      */
     private void refresh() {
-        this.getChildren().clear();
-        addButtonsToPane();
+        Platform.runLater(() -> {
+            this.getChildren().clear();
+            addButtonsToPane();
+        });
     }
 
     /**
@@ -163,41 +166,75 @@ public class GamePane extends GridPane {
     }
 
     /**
-     * This method is used to update the gameboard as opponent click on a cell. This
-     * method draws "O" on the gameboard instead of the "X". This method also
-     * updates {@code moved} variable, as it indicates user can move now.
-     * 
-     * @param row row
-     * @param col col
+     * This method updates the gameboard as the user (not opponenet) clicks on a
+     * cell or button to draw "X". This method also updates {@code moved} variable,
+     * as it indicates whether it's user to move now.
      */
-    public void opponentMove(int row, int col) {
-        // it's current user's turn to move
-        this.moved = false;
+    public void moveTo(int row, int col) {
+        Platform.runLater(() -> {
+            // current user has moved
+            this.moved = true;
+            // update gameboard
+            gameBoard[row][col] = CROSS;
+            buttons[row][col].setDisable(true);
+            buttons[row][col].setText("X");
+            lastStep[0] = row;
+            lastStep[1] = col;
+            refresh();
+        });
 
-        gameBoard[row][col] = CIRCLE;
-        buttons[row][col].setDisable(true);
-        buttons[row][col].setText("0");
-        refresh();
+        // check whether current user wins
         if (hasWon()) {
-            this.finished = true;
-            freeze();
-            var dial = new Alert(AlertType.INFORMATION);
-            dial.setContentText("You Lost!");
-            dial.showAndWait();
+            GamePane.this.finished = true;
+            GamePane.this.showWinningNotification();
+            GamePane.this.freeze();
         } else {
             if (isFull()) {
-                this.finished = true;
-                var dial = new Alert(AlertType.INFORMATION);
-                dial.setContentText("Ends, Nobody Wins!");
-                dial.showAndWait();
+                GamePane.this.finished = true;
+                GamePane.this.showFullNotification();
             }
         }
     }
 
+    /**
+     * This method is used to update the gameboard as opponent click on a cell or
+     * button to draw a "O". This method draws "O" on the gameboard instead of the
+     * "X". This method also updates {@code moved} variable, as it indicates whether
+     * it's user to move now.
+     * 
+     * @param row row
+     * @param col col
+     */
+    public void opponentMoveTo(int row, int col) {
+        Platform.runLater(() -> {
+            // it's current user's turn to move
+            this.moved = false;
+            // update gameboard
+            gameBoard[row][col] = CIRCLE;
+            buttons[row][col].setDisable(true);
+            buttons[row][col].setText("0");
+            refresh();
+        });
+
+        // check whether opponent wins
+        if (hasWon()) {
+            GamePane.this.finished = true;
+            GamePane.this.showWinningNotification();
+            GamePane.this.freeze();
+        } else {
+            if (isFull()) {
+                GamePane.this.finished = true;
+                GamePane.this.showFullNotification();
+            }
+        }
+    }
+
+    /** Disable/ make all buttons unavailable */
     public void freeze() {
         this.setDisable(true);
     }
 
+    /** Unfreeze/ make all buttons available */
     public void unfreeze() {
         this.setDisable(false);
     }
@@ -238,9 +275,11 @@ public class GamePane extends GridPane {
     }
 
     private void showFullNotification() {
-        var dial = new Alert(AlertType.INFORMATION);
-        dial.setContentText("Ends, Nobody Wins!");
-        dial.showAndWait();
+        Platform.runLater(() -> {
+            var dial = new Alert(AlertType.INFORMATION);
+            dial.setContentText("Ends, Nobody Wins!");
+            dial.showAndWait();
+        });
     }
 
     /** Handler for the nine buttons ActionEvent */
@@ -256,30 +295,8 @@ public class GamePane extends GridPane {
 
         @Override
         public void handle(ActionEvent event) {
-            // current user has moved
-            GamePane.this.moved = true;
-
             // update gameBoard
-            Platform.runLater(() -> {
-                gameBoard[row][col] = CROSS;
-                buttons[row][col].setDisable(true);
-                buttons[row][col].setText("X");
-                lastStep[0] = row;
-                lastStep[1] = col;
-                refresh();
-            });
-
-            // check whether current user wins
-            if (hasWon()) {
-                GamePane.this.finished = true;
-                GamePane.this.showWinningNotification();
-                GamePane.this.freeze();
-            } else {
-                if (isFull()) {
-                    GamePane.this.finished = true;
-                    GamePane.this.showFullNotification();
-                }
-            }
+            moveTo(row, col);
         }
     }
 }
