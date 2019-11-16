@@ -130,22 +130,22 @@ public class GamePane extends GridPane {
 
         // check each column
         for (int i = 0; i < 3; i++) {
-            if (gameBoard[0][i] == CROSS && gameBoard[1][i] == CROSS && gameBoard[2][i] == CROSS) {
+            if (gameBoard[0][i] != EMPTY && gameBoard[0][i] == gameBoard[1][i] && gameBoard[1][i] == gameBoard[2][i]) {
                 return true;
             }
         }
 
         // check each row
         for (int i = 0; i < 3; i++) {
-            if (gameBoard[i][0] == CROSS && gameBoard[i][1] == CROSS && gameBoard[i][2] == CROSS) {
+            if (gameBoard[i][0] != EMPTY && gameBoard[i][0] == gameBoard[i][1] && gameBoard[i][1] == gameBoard[i][2]) {
                 return true;
             }
         }
 
         // check diagonal
-        if (gameBoard[0][0] == CROSS && gameBoard[1][1] == CROSS && gameBoard[2][2] == CROSS)
+        if (gameBoard[0][0] != EMPTY && gameBoard[0][0] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[2][2])
             return true;
-        if (gameBoard[0][2] == CROSS && gameBoard[1][1] == CROSS && gameBoard[2][0] == CROSS)
+        if (gameBoard[0][2] != EMPTY && gameBoard[0][2] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[2][0])
             return true;
 
         return false;
