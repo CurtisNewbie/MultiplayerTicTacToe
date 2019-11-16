@@ -23,6 +23,7 @@ public class Host extends Application {
 
     private ServerSocket server;
     private Socket socket;
+
     // InputStream from client
     private DataInputStream in;
     // OutputStream to client
@@ -30,23 +31,25 @@ public class Host extends Application {
 
     @Override
     public void start(Stage priStage) {
+        // Initiate gui
         gamePane = new GamePane();
-        gamePane.setDisable(true);
         Scene s = new Scene(gamePane, 500, 500);
         priStage.setScene(s);
         priStage.setTitle("Host");
         priStage.show();
-        System.out.println("GUI Initated");
 
+        // Terminate the program when primary stage being closed
         priStage.setOnCloseRequest(e -> {
             System.exit(0);
         });
 
+        // Connect to Client and Start the Game
         new Thread(() -> {
+            gamePane.setDisable(true);
             // connect to client
             makeConnection();
-
-            System.out.println("Starting Game");
+            // start the game
+            gamePane.setDisable(false);
             startGame();
         }).start();
     }
@@ -67,14 +70,19 @@ public class Host extends Application {
 
     }
 
-    /** Start the game, Host always starts first */
+    /**
+     * Start the game.<br>
+     * <br>
+     * This method follows the logic that:<br>
+     * 1. The Host starts first,<br>
+     * 2. waits for user (Host) to move,<br>
+     * 3. send the data (the step that the user moved to) to the Client,<br>
+     * 4. repeat this process until the game finishes.
+     * 
+     */
     private void startGame() {
-        gamePane.setDisable(false);
+        System.out.println("Game Started");
         int[] lastStep = null;
-
-        // the game stops when it is full (all cells have been selected) or one player
-        // wins. The pane itself disables all the buttons when it wins, so we only
-        // need to check whether it is full.
         try {
             while (!gamePane.isFull() || !gamePane.hasWon()) {
 
@@ -82,8 +90,6 @@ public class Host extends Application {
 
                 while ((lastStep = gamePane.getLastStep()) == null) {
                     // Host starts first, wait for user to start
-                    Thread.sleep(100);
-                    System.out.println("Waiting");
                 }
                 // user has moved
                 System.out.println("Moved");
@@ -102,7 +108,6 @@ public class Host extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
