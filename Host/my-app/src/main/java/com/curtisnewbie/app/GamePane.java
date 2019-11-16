@@ -34,9 +34,6 @@ public class GamePane extends GridPane {
     /** Has never been selected */
     private final int EMPTY = 0;
 
-    /** Indicate whether the game has finished */
-    private boolean finished;
-
     /**
      * Indicate whether user has moved. This is for current user only not for the
      * opponent
@@ -193,12 +190,10 @@ public class GamePane extends GridPane {
 
             // check whether current user wins
             if (hasWon()) {
-                GamePane.this.finished = true;
                 GamePane.this.showWinningNotification();
                 GamePane.this.freeze();
             } else {
                 if (isFull()) {
-                    GamePane.this.finished = true;
                     GamePane.this.showFullNotification();
                 }
             }
@@ -226,12 +221,10 @@ public class GamePane extends GridPane {
 
             // check whether opponent wins
             if (hasWon()) {
-                GamePane.this.finished = true;
                 GamePane.this.showWinningNotification();
                 GamePane.this.freeze();
             } else {
                 if (isFull()) {
-                    GamePane.this.finished = true;
                     GamePane.this.showFullNotification();
                 }
             }
@@ -246,10 +239,6 @@ public class GamePane extends GridPane {
     /** Unfreeze/ make all buttons available */
     public void unfreeze() {
         this.setDisable(false);
-    }
-
-    public boolean isFinished() {
-        return this.finished;
     }
 
     /**
