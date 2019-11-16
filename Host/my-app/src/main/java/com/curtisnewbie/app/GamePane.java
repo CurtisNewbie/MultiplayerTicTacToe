@@ -181,19 +181,19 @@ public class GamePane extends GridPane {
             lastStep[0] = row;
             lastStep[1] = col;
             refresh();
-        });
 
-        // check whether current user wins
-        if (hasWon()) {
-            GamePane.this.finished = true;
-            GamePane.this.showWinningNotification();
-            GamePane.this.freeze();
-        } else {
-            if (isFull()) {
+            // check whether current user wins
+            if (hasWon()) {
                 GamePane.this.finished = true;
-                GamePane.this.showFullNotification();
+                GamePane.this.showWinningNotification();
+                GamePane.this.freeze();
+            } else {
+                if (isFull()) {
+                    GamePane.this.finished = true;
+                    GamePane.this.showFullNotification();
+                }
             }
-        }
+        });
     }
 
     /**
@@ -214,19 +214,19 @@ public class GamePane extends GridPane {
             buttons[row][col].setDisable(true);
             buttons[row][col].setText("0");
             refresh();
-        });
 
-        // check whether opponent wins
-        if (hasWon()) {
-            GamePane.this.finished = true;
-            GamePane.this.showWinningNotification();
-            GamePane.this.freeze();
-        } else {
-            if (isFull()) {
+            // check whether opponent wins
+            if (hasWon()) {
                 GamePane.this.finished = true;
-                GamePane.this.showFullNotification();
+                GamePane.this.showWinningNotification();
+                GamePane.this.freeze();
+            } else {
+                if (isFull()) {
+                    GamePane.this.finished = true;
+                    GamePane.this.showFullNotification();
+                }
             }
-        }
+        });
     }
 
     /** Disable/ make all buttons unavailable */
