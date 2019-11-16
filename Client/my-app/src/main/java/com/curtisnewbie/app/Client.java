@@ -1,16 +1,12 @@
 package com.curtisnewbie.app;
 
-import java.util.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -22,7 +18,7 @@ public class Client extends Application {
     // modify it if necessary
     private static final String IP = "localhost";
 
-    /** The View of thi proram */
+    /** The View of this proram */
     private GamePane gamePane;
 
     private Socket socket;
@@ -33,23 +29,25 @@ public class Client extends Application {
     private DataOutputStream out;
 
     public void start(Stage priStage) {
+        // Initiate gui
         gamePane = new GamePane();
-        gamePane.setDisable(true);
         Scene s = new Scene(gamePane, 500, 500);
         priStage.setScene(s);
         priStage.setTitle("Client");
         priStage.show();
-        System.out.println("GUI Initated");
 
+        // Terminate the program when primary stage being closes
         priStage.setOnCloseRequest(e -> {
             System.exit(0);
         });
 
+        // Connect to Host and Start the Game
         new Thread(() -> {
+            gamePane.setDisable(true);
             // connect to Host
             makeConnection();
-
-            System.out.println("Starting Game");
+            // start the game
+            gamePane.setDisable(false);
             startGame();
         }).start();
     }
@@ -67,14 +65,20 @@ public class Client extends Application {
         }
     }
 
-    /** Start the game, Host always starts first */
+    /**
+     * Start the game.<br>
+     * <br>
+     * This method follows the logic that:<br>
+     * 1. Host always starts first, so we wait for Host to move. <br>
+     * 2. Then it's Client's turn to move, waiting for user to move using a While
+     * loop.<br>
+     * 3. Send the data (the step that user moved to) to the Host. <br>
+     * 4. Repeat this process until the game finishes.
+     */
     private void startGame() {
-        gamePane.setDisable(false);
+        System.out.println("Starting Game");
         int[] lastStep = null;
 
-        // the game stops when it is full (all cells have been selected) or one player
-        // wins. The pane itself disables all the buttons when it wins, so we only
-        // need to check whether it is full.
         try {
             while (!gamePane.isFull() || !gamePane.hasWon()) {
 
@@ -87,7 +91,6 @@ public class Client extends Application {
 
                 while ((lastStep = gamePane.getLastStep()) == null) {
                     // Host starts first, wait for user to start
-
                 }
                 // user has moved
                 System.out.println("Moved");
