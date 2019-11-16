@@ -111,15 +111,6 @@ public class GamePane extends GridPane {
     }
 
     /**
-     * Refresh the view of this GamePane, it is called internally everytime a button
-     * is clicked or a player (including opponent) makes a move.
-     */
-    private void refresh() {
-        this.getChildren().clear();
-        addButtonsToPane();
-    }
-
-    /**
      * Check whether this step wins.
      * 
      * @param r row
