@@ -229,6 +229,20 @@ public class GamePane extends GridPane {
         return moved;
     }
 
+    private void showWinningNotification() {
+        Platform.runLater(() -> {
+            var dial = new Alert(AlertType.INFORMATION);
+            dial.setContentText("You Win!");
+            dial.showAndWait();
+        });
+    }
+
+    private void showFullNotification() {
+        var dial = new Alert(AlertType.INFORMATION);
+        dial.setContentText("Ends, Nobody Wins!");
+        dial.showAndWait();
+    }
+
     /** Handler for the nine buttons ActionEvent */
     public class ClickHandler implements EventHandler<ActionEvent> {
 
@@ -245,27 +259,25 @@ public class GamePane extends GridPane {
             // current user has moved
             GamePane.this.moved = true;
 
-            gameBoard[row][col] = CROSS;
-            buttons[row][col].setDisable(true);
-            buttons[row][col].setText("X");
-            lastStep[0] = row;
-            lastStep[1] = col;
-            refresh();
+            // update gameBoard
+            Platform.runLater(() -> {
+                gameBoard[row][col] = CROSS;
+                buttons[row][col].setDisable(true);
+                buttons[row][col].setText("X");
+                lastStep[0] = row;
+                lastStep[1] = col;
+                refresh();
+            });
 
             // check whether current user wins
             if (hasWon()) {
-                System.out.println("Win?");
                 GamePane.this.finished = true;
-                freeze();
-                var dial = new Alert(AlertType.INFORMATION);
-                dial.setContentText("You Win!");
-                dial.showAndWait();
+                GamePane.this.showWinningNotification();
+                GamePane.this.freeze();
             } else {
                 if (isFull()) {
                     GamePane.this.finished = true;
-                    var dial = new Alert(AlertType.INFORMATION);
-                    dial.setContentText("Ends, Nobody Wins!");
-                    dial.showAndWait();
+                    GamePane.this.showFullNotification();
                 }
             }
         }
