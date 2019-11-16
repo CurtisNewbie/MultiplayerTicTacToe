@@ -15,7 +15,7 @@ To execute the mvn project, type in following command in CLI:
     "mvn clean compile"
     "mvn javafx:run"
 
-To play this game, two Programs need to be executed that the one in folder "Host" and another one in folder "Client". The two terminals (Host and Client) can be deployed and ran on the same machine, please use "localhost" as an IP address in such case. One the "Client" side (the computer that runs the "Client" maven project), a dialog will be poped up that ask you to enter an IP address, if nothing provided (e.g., dialog closed, or cancel button being pressed), it will the try the default "localhost" address to connect. On the "Host" side, it will simply wait for connection.
+To play this game, two Programs need to be executed that the one in folder "Host" and another one in folder "Client". The two terminals (Host and Client) can be deployed and ran on the same machine, please use "localhost" as an IP address in such case. On the "Client" side (the computer that runs the "Client" maven project), a dialog will be poped up that ask you to enter an IP address, if nothing provided (e.g., dialog closed, or cancel button being pressed), it will try the default "localhost" address to connect. On the "Host" side, it will simply wait for connection.
 
 If you see following messages in you CLI, it means the two terminals have successfully connected.
 
