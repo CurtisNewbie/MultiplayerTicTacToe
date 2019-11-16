@@ -213,7 +213,7 @@ public class GamePane extends GridPane {
 
             // check whether opponent wins
             if (hasWon()) {
-                showWinningNotification();
+                showLosingNotification();
             } else {
                 if (isFull()) {
                     showFullNotification();
@@ -260,6 +260,15 @@ public class GamePane extends GridPane {
         Platform.runLater(() -> {
             var dial = new Alert(AlertType.INFORMATION);
             dial.setContentText("You Win!");
+            dial.showAndWait();
+        });
+    }
+
+    /** Show the Losing notification by creating an Alert */
+    private void showLosingNotification() {
+        Platform.runLater(() -> {
+            var dial = new Alert(AlertType.INFORMATION);
+            dial.setContentText("You Lost!");
             dial.showAndWait();
         });
     }
