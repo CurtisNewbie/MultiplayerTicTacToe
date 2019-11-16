@@ -82,7 +82,7 @@ public class Host extends Application {
         int[] lastStep = null;
         gamePane.freeze();
         try {
-            while (!gamePane.isFull() || !gamePane.hasWon()) {
+            while (true) {
                 // it's user's turn to move
                 gamePane.unfreeze();
 
@@ -99,11 +99,18 @@ public class Host extends Application {
                 out.writeInt(lastStep[1]);
                 out.flush();
 
+                if (gamePane.hasWon() || gamePane.isFull())
+                    break;
+
                 // Opponent/ Client has moved, update the gamePane
                 int row = in.readInt();
                 int col = in.readInt();
                 gamePane.opponentMoveTo(row, col);
+
+                if (gamePane.hasWon() || gamePane.isFull())
+                    break;
             }
+            System.out.print("End");
             gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
