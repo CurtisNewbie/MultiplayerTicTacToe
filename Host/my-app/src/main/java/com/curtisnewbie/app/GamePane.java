@@ -7,12 +7,21 @@ import javafx.event.*;
 import javafx.application.Platform;
 
 /**
+ * 
  * A {@code GridPane} that draws a TicTacToe game board, it has a number of
  * methods for getting information from the gui as well as methods to
- * control/update the gui. For example, it draws the "X" when user clicks on the
- * button, and it freezes button onces the button is clicked. It also provides
- * methods to update game board (when opponent makes a move), such as the
- * {@code oppponentMove()} method.
+ * control/update the gui. <br>
+ * <br>
+ * It should be noted that the current user (not opponent) is always represented
+ * using "X", and the opponent is represented using "O". This may be fixed in
+ * the future. <br>
+ * <br>
+ * For example, it draws the "X" when user clicks on the button, and it freezes
+ * button onces the button is clicked. It also provides methods to update game
+ * board (when opponent makes a move).
+ * 
+ * @author Yongjie Zhuang
+ * 
  */
 public class GamePane extends GridPane {
 
@@ -109,7 +118,7 @@ public class GamePane extends GridPane {
 
     /**
      * Refresh the view of this GamePane, it is called internally everytime a button
-     * is clicked
+     * is clicked or a player (including opponent) makes a move.
      */
     private void refresh() {
         Platform.runLater(() -> {
@@ -153,8 +162,8 @@ public class GamePane extends GridPane {
     /**
      * Whether the gameboard still has empty cell to select.
      * 
-     * @return {@code true} if there are empty cells, {@code false} if there is no
-     *         empty cell.
+     * @return {@code true} if there are empty cells not being selected before,
+     *         {@code false} if there is no empty cell.
      */
     public boolean isFull() {
         for (int[] row : gameBoard)
@@ -266,6 +275,7 @@ public class GamePane extends GridPane {
         return moved;
     }
 
+    /** Show the winning notification by creating an Alert */
     private void showWinningNotification() {
         Platform.runLater(() -> {
             var dial = new Alert(AlertType.INFORMATION);
@@ -274,6 +284,10 @@ public class GamePane extends GridPane {
         });
     }
 
+    /**
+     * Show the full notification (where all buttons have been selected) by creating
+     * an Alert
+     */
     private void showFullNotification() {
         Platform.runLater(() -> {
             var dial = new Alert(AlertType.INFORMATION);
@@ -283,7 +297,7 @@ public class GamePane extends GridPane {
     }
 
     /** Handler for the nine buttons ActionEvent */
-    public class ClickHandler implements EventHandler<ActionEvent> {
+    private class ClickHandler implements EventHandler<ActionEvent> {
 
         private int row;
         private int col;
