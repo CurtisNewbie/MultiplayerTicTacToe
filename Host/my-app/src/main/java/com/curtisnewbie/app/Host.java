@@ -90,6 +90,7 @@ public class Host extends Application {
 
                 while ((lastStep = gamePane.getLastStep()) == null) {
                     // Host starts first, wait for user to start
+                    Thread.sleep(10);
                 }
                 // user has moved
                 System.out.println("Moved");
@@ -103,7 +104,7 @@ public class Host extends Application {
                 int row = in.readInt();
                 int col = in.readInt();
                 // update the game pane as opponent (client) moved.
-                gamePane.opponentMove(row, col);
+                gamePane.opponentMoveTo(row, col);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -76,7 +76,7 @@ public class Client extends Application {
      * 4. Repeat this process until the game finishes.
      */
     private void startGame() {
-        System.out.println("Starting Game");
+        System.out.println("Game Started");
         int[] lastStep = null;
 
         try {
@@ -87,10 +87,11 @@ public class Client extends Application {
                 int col = in.readInt();
                 System.out.println("Host went for [" + row + "," + col + "]");
                 // update the game pane as opponent (Host) moved.
-                gamePane.opponentMove(row, col);
+                gamePane.opponentMoveTo(row, col);
 
                 while ((lastStep = gamePane.getLastStep()) == null) {
                     // Host starts first, wait for user to start
+                    Thread.sleep(10);
                 }
                 // user has moved
                 System.out.println("Moved");
@@ -102,6 +103,8 @@ public class Client extends Application {
                 out.flush();
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
