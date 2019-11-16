@@ -15,10 +15,7 @@ import javafx.application.Platform;
  * It should be noted that the current user (not opponent) is always represented
  * using "X", and the opponent is represented using "O". This may be fixed in
  * the future. <br>
- * <br>
- * For example, it draws the "X" when user clicks on the button, and it freezes
- * button onces the button is clicked. It also provides methods to update game
- * board (when opponent makes a move).
+ * 
  * 
  * @author Yongjie Zhuang
  * 
@@ -118,10 +115,8 @@ public class GamePane extends GridPane {
      * is clicked or a player (including opponent) makes a move.
      */
     private void refresh() {
-        Platform.runLater(() -> {
-            this.getChildren().clear();
-            addButtonsToPane();
-        });
+        this.getChildren().clear();
+        addButtonsToPane();
     }
 
     /**
@@ -179,22 +174,20 @@ public class GamePane extends GridPane {
     public void moveTo(int row, int col) {
         Platform.runLater(() -> {
             // current user has moved
-            this.moved = true;
+            moved = true;
             // update gameboard
             gameBoard[row][col] = CROSS;
             buttons[row][col].setDisable(true);
             buttons[row][col].setText("X");
             lastStep[0] = row;
             lastStep[1] = col;
-            refresh();
 
             // check whether current user wins
             if (hasWon()) {
-                GamePane.this.showWinningNotification();
-                GamePane.this.freeze();
+                showWinningNotification();
             } else {
                 if (isFull()) {
-                    GamePane.this.showFullNotification();
+                    showFullNotification();
                 }
             }
         });
@@ -212,20 +205,18 @@ public class GamePane extends GridPane {
     public void opponentMoveTo(int row, int col) {
         Platform.runLater(() -> {
             // it's current user's turn to move
-            this.moved = false;
+            moved = false;
             // update gameboard
             gameBoard[row][col] = CIRCLE;
             buttons[row][col].setDisable(true);
             buttons[row][col].setText("0");
-            refresh();
 
             // check whether opponent wins
             if (hasWon()) {
-                GamePane.this.showWinningNotification();
-                GamePane.this.freeze();
+                showWinningNotification();
             } else {
                 if (isFull()) {
-                    GamePane.this.showFullNotification();
+                    showFullNotification();
                 }
             }
         });
