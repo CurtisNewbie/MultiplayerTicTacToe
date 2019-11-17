@@ -62,6 +62,7 @@ public class GamePane extends GridPane {
             for (int j = 0; j < 3; j++) {
                 buttons[i][j] = new Button();
                 buttons[i][j].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                buttons[i][j].setStyle("-fx-border-color: lightgrey; -fx-border-width: 2; -fx-font-size: 50px");
             }
         }
 
