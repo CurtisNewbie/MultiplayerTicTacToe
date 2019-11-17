@@ -67,25 +67,32 @@ public class Client extends Application {
         // Connect to Host and Start the Game
         new Thread(() -> {
             gamePane.freeze();
-            // connect to Host
-            makeConnection();
-            // start the game
-            gamePane.unfreeze();
-            startGame();
+            try {
+                // connect to Host
+                makeConnection();
+
+                // start the game
+                gamePane.unfreeze();
+                startGame();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showConnectionFailedDialog();
+            }
         }).start();
     }
 
-    /** Connect to Host */
-    private void makeConnection() {
-        try {
-            // setup Client, use default IP if not provided
-            socket = new Socket(ip == null ? DEF_IP : ip, PORT);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-            System.out.println("Connected to Host : " + socket.getInetAddress().getHostAddress());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Connect to Host
+     * 
+     * @throws IOException if the connection failed (e.g., cannot connect to the
+     *                     Host or connection declined)
+     */
+    private void makeConnection() throws IOException {
+        // setup Client, use default IP if not provided
+        socket = new Socket(ip == null ? DEF_IP : ip, PORT);
+        in = new DataInputStream(socket.getInputStream());
+        out = new DataOutputStream(socket.getOutputStream());
+        System.out.println("Connected to Host : " + socket.getInetAddress().getHostAddress());
     }
 
     /**
@@ -164,6 +171,16 @@ public class Client extends Application {
             Alert dia = new Alert(AlertType.WARNING);
             dia.setTitle("Connection Lost");
             dia.setContentText("Connection to the host is lost.");
+            dia.show();
+        });
+    }
+
+    /** Create and show the dialog when connection failed. */
+    private void showConnectionFailedDialog() {
+        Platform.runLater(() -> {
+            Alert dia = new Alert(AlertType.WARNING);
+            dia.setTitle("Connection Failed");
+            dia.setContentText("Cannot Connect to the Host");
             dia.show();
         });
     }
