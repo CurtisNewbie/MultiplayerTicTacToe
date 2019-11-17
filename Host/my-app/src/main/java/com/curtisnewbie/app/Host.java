@@ -8,7 +8,10 @@ import java.net.Socket;
 import javafx.stage.Stage;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * Client-side Terminal of TicTacToe Game
@@ -120,8 +123,19 @@ public class Host extends Application {
             gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
+            showDisconnectDialog();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /** Create and show the dialog when connection lost. */
+    private void showDisconnectDialog() {
+        Platform.runLater(() -> {
+            Alert dia = new Alert(AlertType.WARNING);
+            dia.setTitle("Connection Lost");
+            dia.setContentText("Connection to the client is lost.");
+            dia.show();
+        });
     }
 }

@@ -8,7 +8,9 @@ import java.net.Socket;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -138,6 +140,7 @@ public class Client extends Application {
             gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
+            showDisconnectDialog();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -153,6 +156,16 @@ public class Client extends Application {
         dialog.setTitle("IP Input Dialog");
         dialog.setContentText("Enter Host's IP:");
         return dialog;
+    }
+
+    /** Create and show the dialog when connection lost. */
+    private void showDisconnectDialog() {
+        Platform.runLater(() -> {
+            Alert dia = new Alert(AlertType.WARNING);
+            dia.setTitle("Connection Lost");
+            dia.setContentText("Connection to the host is lost.");
+            dia.show();
+        });
     }
 
 }
