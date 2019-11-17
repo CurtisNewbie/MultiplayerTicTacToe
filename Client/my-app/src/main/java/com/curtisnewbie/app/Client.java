@@ -11,6 +11,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
+/**
+ * Client-side Terminal of TicTacToe Game
+ * 
+ * @author Yongjie Zhuang
+ * 
+ */
 public class Client extends Application {
 
     // modify it and the one in Host program, if necessary
