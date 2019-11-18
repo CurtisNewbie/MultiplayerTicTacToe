@@ -143,13 +143,15 @@ public class Client extends Application {
                 if (gamePane.hasWon() || gamePane.isFull())
                     break;
             }
-            System.out.print("End");
+            System.out.println("End");
             gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
             showDisconnectDialog();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 
@@ -183,6 +185,21 @@ public class Client extends Application {
             dia.setContentText("Cannot Connect to the Host");
             dia.show();
         });
+    }
+
+    /**
+     * Close connection.<br>
+     * <br>
+     * This method closes the {@code Socket}. The {@code DataInputStream} and
+     * {@code DataOutputStream} are closed when the {@code Socket} is closed.
+     */
+    private void closeConnection() {
+        try {
+            socket.close();
+            System.out.println("Connection Closed");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

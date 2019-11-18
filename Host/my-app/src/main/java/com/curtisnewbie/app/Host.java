@@ -119,12 +119,31 @@ public class Host extends Application {
                 if (gamePane.hasWon() || gamePane.isFull())
                     break;
             }
-            System.out.print("End");
+            System.out.println("End");
             gamePane.freeze();
         } catch (IOException e) {
             e.printStackTrace();
             showDisconnectDialog();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+
+    /**
+     * Close connection.<br>
+     * <br>
+     * This method closes the {@code Socket} and {@code ServerSocket} created for
+     * connection. The {@code DataInputStream} and {@code DataOutputStream} are
+     * closed when the {@code Socket} is closed.
+     */
+    private void closeConnection() {
+        try {
+            socket.close();
+            server.close();
+            System.out.println("Connection Closed");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
